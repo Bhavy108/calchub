@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CalcHub — Free Online Calculators for Everything</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+  .hero {
+    padding: 64px 0 56px;
+    text-align: center;
+  }
+  .hero h1 {
+    font-size: clamp(32px, 5vw, 50px);
+    font-weight: 800;
+    line-height: 1.08;
+    margin-bottom: 16px;
+  }
+  .hero h1 em { font-style: normal; color: var(--teal); }
+  .hero p.lead {
+    color: var(--slate);
+    font-size: 17px;
+    max-width: 540px;
+    margin: 0 auto 36px;
+  }
+
+  /* Hero live calculator */
+  .hero-calc {
+    max-width: 480px;
+    margin: 0 auto;
+    background: var(--ink);
+    border-radius: 16px;
+    padding: 26px;
+    box-shadow: 0 30px 60px -24px rgba(13, 43, 43, 0.4);
+    text-align: left;
+  }
+  .hero-calc-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    color: var(--coral);
+    margin-bottom: 14px;
+  }
+  .hero-calc-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .hero-calc input, .hero-calc select {
+    flex: 1;
+    padding: 12px 14px;
+    border-radius: 8px;
+    border: none;
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+  }
+  .hero-calc select { font-family: 'Inter', sans-serif; color: #fff; }
+  .hero-calc input::placeholder { color: rgba(255,255,255,0.4); }
+  .hero-calc-result {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px dashed rgba(255,255,255,0.15);
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .hero-calc-result .label { font-size: 13px; color: rgba(255,255,255,0.6); }
+  .hero-calc-result .value { font-family: 'Sora', sans-serif; font-size: 26px; font-weight: 700; color: #fff; }
+
+  .currency-toggle {
+    display: inline-flex;
+    background: rgba(255,255,255,0.08);
+    border-radius: 100px;
+    padding: 3px;
+    margin-bottom: 14px;
+  }
+  .currency-toggle button {
+    border: none; background: transparent;
+    padding: 6px 13px; border-radius: 100px;
+    font-size: 12.5px; font-weight: 600; color: rgba(255,255,255,0.6);
+  }
+  .currency-toggle button.active { background: var(--coral); color: #fff; }
+
+  .stat-strip {
+    display: flex;
+    justify-content: center;
+    gap: 48px;
+    margin-top: 40px;
+    flex-wrap: wrap;
+  }
+  .stat-strip .stat { text-align: center; }
+  .stat-strip .num { font-family: 'Sora', sans-serif; font-size: 26px; font-weight: 800; color: var(--ink); }
+  .stat-strip .label { font-size: 12.5px; color: var(--slate-light); }
+
+  .cat-icon.financial { background: var(--teal-soft); color: var(--teal-dark); }
+  .cat-icon.fitness { background: var(--coral-soft); color: var(--coral); }
+  .cat-icon.math { background: #E8E6FB; color: #4F46E5; }
+  .cat-icon.other { background: #FFF4DB; color: #B8860B; }
+</style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <a href="index.html" class="logo">
+      <div class="logo-mark"><span>C</span></div>
+      CalcHub
+    </a>
+    <div class="nav-search">
+      <svg viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.4"/><path d="M14 14L11 11" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+      <input type="text" placeholder="Search calculators…" id="site-search">
+    </div>
+    <div class="nav-links">
+      <a href="#financial">Financial</a>
+      <a href="#fitness">Fitness</a>
+      <a href="#math">Math</a>
+      <a href="#other">Other</a>
+    </div>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <span class="eyebrow"><span class="eyebrow-dot"></span>100+ free calculators, no sign-up</span>
+    <h1>Quick math for <em>real decisions</em>.</h1>
+    <p class="lead">Loans, calories, grades, dates, percentages — CalcHub gives you a straight answer in seconds, with the working shown.</p>
+
+    <div class="hero-calc">
+      <div class="hero-calc-label">// try it — loan EMI, right here</div>
+      <div class="currency-toggle" id="curr-toggle">
+        <button class="active" data-curr="₹">₹ INR</button>
+        <button data-curr="$">$ USD</button>
+      </div>
+      <div class="hero-calc-row">
+        <input type="number" id="hc-amount" placeholder="Loan amount" value="500000">
+        <input type="number" id="hc-rate" placeholder="Rate %" value="9" step="0.1">
+      </div>
+      <div class="hero-calc-row">
+        <select id="hc-years">
+          <option value="1">1 year</option>
+          <option value="3">3 years</option>
+          <option value="5" selected>5 years</option>
+          <option value="10">10 years</option>
+          <option value="20">20 years</option>
+        </select>
+      </div>
+      <div class="hero-calc-result">
+        <span class="label">Monthly payment</span>
+        <span class="value" id="hc-result">—</span>
+      </div>
+    </div>
+
+    <div class="stat-strip">
+      <div class="stat"><div class="num">100+</div><div class="label">Calculators</div></div>
+      <div class="stat"><div class="num">$0</div><div class="label">Always free</div></div>
+      <div class="stat"><div class="num">0</div><div class="label">Sign-ups required</div></div>
+      <div class="stat"><div class="num">4</div><div class="label">Categories</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="popular">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow"><span class="eyebrow-dot"></span>Most used</span>
+      <h2>Start with what everyone's searching for.</h2>
+      <p>The calculators people come back to again and again.</p>
+    </div>
+    <div class="popular-grid">
+      <a class="popular-card" href="calculators/loan-emi.html">
+        <div class="p-icon">₹</div>
+        <div><h4>Loan / EMI</h4><p>Monthly payments</p></div>
+      </a>
+      <a class="popular-card" href="calculators/bmi.html">
+        <div class="p-icon">BMI</div>
+        <div><h4>BMI Calculator</h4><p>Body mass index</p></div>
+      </a>
+      <a class="popular-card" href="calculators/percentage.html">
+        <div class="p-icon">%</div>
+        <div><h4>Percentage</h4><p>4 ways to calculate</p></div>
+      </a>
+      <a class="popular-card" href="calculators/age.html">
+        <div class="p-icon">⏳</div>
+        <div><h4>Age Calculator</h4><p>Exact age in y/m/d</p></div>
+      </a>
+      <a class="popular-card" href="calculators/gpa.html">
+        <div class="p-icon">GPA</div>
+        <div><h4>GPA Calculator</h4><p>Grade point average</p></div>
+      </a>
+      <a class="popular-card" href="calculators/compound-interest.html">
+        <div class="p-icon">$</div>
+        <div><h4>Compound Interest</h4><p>Watch money grow</p></div>
+      </a>
+      <a class="popular-card" href="calculators/discount.html">
+        <div class="p-icon">−%</div>
+        <div><h4>Discount</h4><p>Sale price &amp; savings</p></div>
+      </a>
+      <a class="popular-card" href="calculators/bmr.html">
+        <div class="p-icon">BMR</div>
+        <div><h4>BMR Calculator</h4><p>Daily calorie needs</p></div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section id="financial">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow"><span class="eyebrow-dot"></span>Categories</span>
+      <h2>Browse by category.</h2>
+      <p>Every calculator, organized the way you'd look for it.</p>
+    </div>
+    <div class="cat-grid">
+
+      <div class="cat-card">
+        <div class="cat-card-head">
+          <div class="cat-icon financial">💰</div>
+          <div><h3>Financial</h3><div class="cat-count">14 calculators</div></div>
+        </div>
+        <ul class="cat-tool-list">
+          <li><a href="calculators/loan-emi.html">Loan / EMI Calculator <span class="arrow">→</span></a></li>
+          <li><a href="calculators/compound-interest.html">Compound Interest <span class="arrow">→</span></a></li>
+          <li><a href="calculators/simple-interest.html">Simple Interest <span class="arrow">→</span></a></li>
+          <li><a href="calculators/sip.html">SIP Calculator <span class="arrow">→</span></a></li>
+          <li><a href="calculators/discount.html">Discount Calculator <span class="arrow">→</span></a></li>
+          <li><a href="calculators/savings-goal.html">Savings Goal <span class="arrow">→</span></a></li>
+        </ul>
+        <div class="cat-card-foot"><a href="#" data-cat-link="financial">See all financial calculators →</a></div>
+      </div>
+
+      <div class="cat-card" id="fitness">
+        <div class="cat-card-head">
+          <div class="cat-icon fitness">🏃</div>
+          <div><h3>Fitness &amp; Health</h3><div class="cat-count">12 calculators</div></div>
+        </div>
+        <ul class="cat-tool-list">
+          <li><a href="calculators/bmi.html">BMI Calculator <span class="arrow">→</span></a></li>
+          <li><a href="calculators/bmr.html">BMR Calculator <span class="arrow">→</span></a></li>
+          <li><a href="calculators/calorie.html">Calorie Calculator <span class="arrow">→</span></a></li>
+          <li><a href="calculators/body-fat.html">Body Fat Calculator <span class="arrow">→</span></a></li>
+          <li><a href="calculators/water-intake.html">Water Intake <span class="arrow">→</span></a></li>
+          <li><a href="calculators/ideal-weight.html">Ideal Weight <span class="arrow">→</span></a></li>
+        </ul>
+        <div class="cat-card-foot"><a href="#" data-cat-link="fitness">See all fitness calculators →</a></div>
+      </div>
+
+      <div class="cat-card" id="math">
+        <div class="cat-card-head">
+          <div class="cat-icon math">∑</div>
+          <div><h3>Math</h3><div class="cat-count">11 calculators</div></div>
+        </div>
+        <ul class="cat-tool-list">
+          <li><a href="calculators/percentage.html">Percentage Calculator <span class="arrow">→</span></a></li>
+          <li><a href="calculators/average.html">Average Calculator <span class="arrow">→</span></a></li>
+          <li><a href="calculators/fraction.html">Fraction Calculator <span class="arrow">→</span></a></li>
+          <li><a href="calculators/ratio.html">Ratio Calculator <span class="arrow">→</span></a></li>
+          <li><a href="calculators/standard-deviation.html">Standard Deviation <span class="arrow">→</span></a></li>
+          <li><a href="calculators/triangle.html">Triangle Calculator <span class="arrow">→</span></a></li>
+        </ul>
+        <div class="cat-card-foot"><a href="#" data-cat-link="math">See all math calculators →</a></div>
+      </div>
+
+      <div class="cat-card" id="other">
+        <div class="cat-card-head">
+          <div class="cat-icon other">🛠️</div>
+          <div><h3>Other / Daily Use</h3><div class="cat-count">13 calculators</div></div>
+        </div>
+        <ul class="cat-tool-list">
+          <li><a href="calculators/age.html">Age Calculator <span class="arrow">→</span></a></li>
+          <li><a href="calculators/gpa.html">GPA Calculator <span class="arrow">→</span></a></li>
+          <li><a href="calculators/date.html">Date Calculator <span class="arrow">→</span></a></li>
+          <li><a href="calculators/unit-converter.html">Unit Converter <span class="arrow">→</span></a></li>
+          <li><a href="calculators/password-generator.html">Password Generator <span class="arrow">→</span></a></li>
+          <li><a href="calculators/tip.html">Tip Calculator <span class="arrow">→</span></a></li>
+        </ul>
+        <div class="cat-card-foot"><a href="#" data-cat-link="other">See all daily-use calculators →</a></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section style="background: var(--ink); color: #fff; text-align: center; border-radius: 20px; max-width: 1180px; margin: 0 auto 64px; padding: 56px 32px;">
+  <h2 style="font-size: clamp(22px, 3vw, 30px); font-weight: 700; margin-bottom: 12px;">Don't see the calculator you need?</h2>
+  <p style="color: rgba(255,255,255,0.65); max-width: 420px; margin: 0 auto 26px; font-size: 14.5px;">CalcHub is growing every week. Tell us what to build next.</p>
+  <a href="mailto:hello@calchub.example" class="btn-primary" style="background: var(--coral);">Request a calculator</a>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <div class="logo" style="margin-bottom: 12px;"><div class="logo-mark"><span>C</span></div>CalcHub</div>
+        <p style="color: var(--slate); font-size: 13.5px; max-width: 240px;">Free, fast, no-signup calculators for money, fitness, math, and everyday life.</p>
+      </div>
+      <div>
+        <h4>Financial</h4>
+        <ul>
+          <li><a href="calculators/loan-emi.html">Loan / EMI</a></li>
+          <li><a href="calculators/compound-interest.html">Compound Interest</a></li>
+          <li><a href="calculators/sip.html">SIP</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Fitness</h4>
+        <ul>
+          <li><a href="calculators/bmi.html">BMI</a></li>
+          <li><a href="calculators/bmr.html">BMR</a></li>
+          <li><a href="calculators/calorie.html">Calorie</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Math</h4>
+        <ul>
+          <li><a href="calculators/percentage.html">Percentage</a></li>
+          <li><a href="calculators/average.html">Average</a></li>
+          <li><a href="calculators/fraction.html">Fraction</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Other</h4>
+        <ul>
+          <li><a href="calculators/age.html">Age</a></li>
+          <li><a href="calculators/gpa.html">GPA</a></li>
+          <li><a href="calculators/date.html">Date</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 CalcHub. Free, always.</span>
+      <span>No ads. No tracking. Just math.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Currency toggle
+  const currBtns = document.querySelectorAll('#curr-toggle button');
+  let currentCurr = '₹';
+  currBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      currBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentCurr = btn.dataset.curr;
+      calcEMI();
+    });
+  });
+
+  // Live EMI calculator in hero
+  function calcEMI() {
+    const amount = parseFloat(document.getElementById('hc-amount').value) || 0;
+    const rate = parseFloat(document.getElementById('hc-rate').value) || 0;
+    const years = parseFloat(document.getElementById('hc-years').value) || 1;
+    const months = years * 12;
+    const monthlyRate = rate / 12 / 100;
+    let emi;
+    if (monthlyRate === 0) {
+      emi = amount / months;
+    } else {
+      emi = amount * monthlyRate * Math.pow(1 + monthlyRate, months) / (Math.pow(1 + monthlyRate, months) - 1);
+    }
+    document.getElementById('hc-result').textContent = currentCurr + ' ' + emi.toLocaleString(undefined, {maximumFractionDigits: 0});
+  }
+
+  ['hc-amount', 'hc-rate', 'hc-years'].forEach(id => {
+    document.getElementById(id).addEventListener('input', calcEMI);
+    document.getElementById(id).addEventListener('change', calcEMI);
+  });
+  calcEMI();
+
+  // Simple search filter — jumps to matching calculator if exact-ish match, else scrolls to categories
+  document.getElementById('site-search').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      document.getElementById('financial').scrollIntoView({behavior: 'smooth'});
+    }
+  });
+</script>
+
+</body>
+</html>
